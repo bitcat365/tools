@@ -32,17 +32,30 @@ do
         echo "Commission Reards:" $commission_rewards_int 
         echo "Total Reward:" $total_rewards
 
-        if [ $total_rewards -gt $THRESHOLD ]
+        if [ $delegate_rewards_int -gt $THRESHOLD ]
                 then
+
+                echo "Start withdraw delegate rewards"
                 echo $PASSPHRASE | $PROGRAM_PATH tx distribution withdraw-all-rewards --chain-id $CHAIN_ID --from $KEY -y
 
-                sleep 20
-                echo $PASSPHRASE | $PROGRAM_PATH tx distribution withdraw-rewards $VALIDATOR_ADDRESS --chain-id $CHAIN_ID --from $KEY --commission -y
-
+                echo "Start start new delegate for delegate rewards"        
                 sleep 20 #Start delegate
                 echo $PASSPHRASE | $PROGRAM_PATH tx staking delegate $VALIDATOR_ADDRESS ${THRESHOLD}ukava --chain-id $CHAIN_ID --from $KEY   --gas-adjustment $GAS_ADJUSTMENT --gas $GAS -y
         else
-                echo "Not sufficient funds"
+                echo "Not sufficient funds for Delegate Rewards"
+        fi
+
+        if [ $commission_rewards_int -gt $THRESHOLD ]
+                then
+
+                echo "Start withdraw commission rewards"
+                echo $PASSPHRASE | $PROGRAM_PATH tx distribution withdraw-rewards $VALIDATOR_ADDRESS --chain-id $CHAIN_ID --from $KEY --commission -y
+
+                echo "Start start new delegate for commission rewards" 
+                sleep 20 #Start delegate
+                echo $PASSPHRASE | $PROGRAM_PATH tx staking delegate $VALIDATOR_ADDRESS ${THRESHOLD}ukava --chain-id $CHAIN_ID --from $KEY   --gas-adjustment $GAS_ADJUSTMENT --gas $GAS -y
+        else
+                echo "Not sufficient funds for Commission Reards"
         fi
 done
 
