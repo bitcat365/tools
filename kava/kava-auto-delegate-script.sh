@@ -38,7 +38,7 @@ do
                 echo "Start withdraw delegate rewards"
                 echo $PASSPHRASE | $PROGRAM_PATH tx distribution withdraw-all-rewards --chain-id $CHAIN_ID --from $KEY -y
 
-                echo "Start start new delegate for delegate rewards"        
+                echo "Start new delegate for delegate rewards"        
                 sleep 20 #Start delegate
                 echo $PASSPHRASE | $PROGRAM_PATH tx staking delegate $VALIDATOR_ADDRESS ${THRESHOLD}ukava --chain-id $CHAIN_ID --from $KEY   --gas-adjustment $GAS_ADJUSTMENT --gas $GAS -y
         else
@@ -51,7 +51,7 @@ do
                 echo "Start withdraw commission rewards"
                 echo $PASSPHRASE | $PROGRAM_PATH tx distribution withdraw-rewards $VALIDATOR_ADDRESS --chain-id $CHAIN_ID --from $KEY --commission -y
 
-                echo "Start start new delegate for commission rewards" 
+                echo "Start new delegate for commission rewards" 
                 sleep 20 #Start delegate
                 echo $PASSPHRASE | $PROGRAM_PATH tx staking delegate $VALIDATOR_ADDRESS ${THRESHOLD}ukava --chain-id $CHAIN_ID --from $KEY   --gas-adjustment $GAS_ADJUSTMENT --gas $GAS -y
         else
