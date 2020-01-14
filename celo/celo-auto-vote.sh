@@ -32,7 +32,7 @@ do
 
             echo "########### Start acitve validator and group ###########"
             sleep 5
-            #celocli election:activate --from $validator_address --wait && celocli election:activate --from $group_address --wait
+            celocli election:activate --from $validator_address --wait && celocli election:activate --from $group_address --wait
         else
             if [ $vote_validator_balance -gt $vote_validator_balance ];
             # execute validator
@@ -47,7 +47,7 @@ do
 
                 echo " ########### Start acitve validator ###########"
                 sleep 5
-                #celocli election:activate --from $validator_address --wait
+                celocli election:activate --from $validator_address --wait
             elif [ $vote_group_balance -gt account_group_save ];
             # execute group
             then
@@ -62,7 +62,7 @@ do
 
                 echo "########### Start acitve group ###########"
                 sleep 5
-                #celocli election:activate --from $group_address --wait
+                celocli election:activate --from $group_address --wait
             else
                 echo "########### NO BALANCE CAN VOTE ###########"
             fi    
