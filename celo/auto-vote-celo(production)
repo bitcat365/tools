@@ -1,0 +1,87 @@
+#!/bin/bash
+
+account_validator_addr=cbebe96dd4811243e23b1f7b43d7c3266c59af2f
+account_group_addr=93c110dc9812dc075c1541b2c5d1030b2ad6c293
+account_goldBalance_hold=2000000000000000000
+account_goldBalance_hold_token=2
+
+while true
+do
+
+
+        echo "########### calcuator valadador address balance ###########"
+        account_validator_dollarBalance=`celocli account:balance $account_validator_addr | grep dollarBalance | awk -F 'dollarBalance: ' '{print $2}'`
+        
+        account_vdalidator_dollarBalance_ex_for_pre=`echo "$account_validator_dollarBalance * 0.9" | bc`
+        account_vdalidator_dollarBalance_ex_for=`echo ${account_vdalidator_dollarBalance_ex_for_pre%.*}`
+
+        echo "########### start exchange for valadator ###########"
+        celocli exchange:dollars --value $account_validator_dollarBalance --from $account_validator_addr --for $account_vdalidator_dollarBalance_ex_for
+
+        account_validator_goldBalance=`celocli account:balance $account_validator_addr | grep goldBalance | awk -F 'goldBalance: ' '{print $2}'`
+        account_validator_goldBalance_vote=`echo $account_validator_goldBalance - $account_goldBalance_hold | bc`
+        account_validator_goldBalance_vote_pompare=`echo $account_validator_goldBalance_vote | awk '{sub(/.{18}$/,"")}1'`
+
+
+        echo "########### calcuator group address balance ###########"
+        account_group_dollarBalance=`celocli account:balance $account_group_addr | grep dollarBalance | awk -F 'dollarBalance: ' '{print $2}'`
+
+        account_group_dollarBalance_ex_for_pre=`echo "$account_group_dollarBalance * 0.9" | bc`
+        account_group_dollarBalance_ex_for=`echo ${account_group_dollarBalance_ex_for_pre%.*}`
+
+        echo "########### start exchange for group ###########"
+        celocli exchange:dollars --value $account_group_dollarBalance --from $account_group_addr --for $account_group_dollarBalance_ex_for
+
+        account_group_goldBalance=`celocli account:balance $account_group_addr | grep goldBalance | awk -F 'goldBalance: ' '{print $2}'`
+        account_group_goldBalance_vote=`echo $account_group_goldBalance - $account_goldBalance_hold | bc`
+        account_group_goldBalance_vote_pompare=`echo $account_group_goldBalance_vote | awk '{sub(/.{18}$/,"")}1'`
+
+
+        if [ $account_validator_goldBalance_vote_pompare -gt $account_goldBalance_hold_token ] && [ $account_group_goldBalance_vote_pompare -gt $account_goldBalance_hold_token ]
+        # execute validator and group
+        then
+
+            echo "########### Start lock validator and group ###########"
+            celocli lockedgold:lock --from $account_validator_addr --value $account_validator_goldBalance_vote
+            celocli lockedgold:lock --from $account_group_addr --value $account_group_goldBalance_vote
+
+            echo "########### Start vote validator and group ###########"
+            celocli election:vote --from $account_validator_addr --for $account_group_addr --value $account_validator_goldBalance_vote
+            celocli election:vote --from $account_group_addr --for $account_group_addr --value $account_group_goldBalance_vote
+
+            echo "########### Start acitve validator and group ###########"
+            celocli election:activate --from $account_validator_addr --wait && celocli election:activate --from $account_group_addr --wait
+                    
+        else
+            if [ $account_validator_goldBalance_vote_pompare -gt $account_goldBalance_hold_token ];
+            # execute validator
+            then
+                echo "########### Start lock validator ###########"
+                celocli lockedgold:lock --from $account_validator_addr --value $account_validator_goldBalance_vote
+
+                echo "########### Start vote validator ###########"
+                celocli election:vote --from $account_validator_addr --for $account_group_addr --value $account_validator_goldBalance_vote
+
+                echo " ########### Start acitve validator ###########"
+                celocli election:activate --from $validator_address --wait
+
+            elif [ $account_validator_goldBalance_vote_pompare -gt $account_goldBalance_hold_token ];
+            # execute group
+            then
+                
+                echo "########### Start lock group ###########"
+                celocli lockedgold:lock --from $account_group_addr --value $account_group_goldBalance_vote
+
+                echo "########### Start vote group ###########"
+                celocli election:vote --from $account_group_addr --for $account_group_addr --value $account_group_goldBalance_vote
+
+                echo "########### Start acitve group ###########"
+                celocli election:activate --from $account_group_addr --wait
+            else
+                echo "########### NO BALANCE CAN VOTE ###########"
+            fi    
+        fi
+
+        sleep 3600
+        #every epoch will take 720(length) * 5s(blocktimes)
+done
