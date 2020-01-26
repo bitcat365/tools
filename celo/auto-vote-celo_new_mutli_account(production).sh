@@ -14,7 +14,7 @@ do
         echo "************* start time" + `date`
         echo "@@@@@@@@@@@@ calcuator valadador1 address balance @@@@@@@@@@@@"
         account_validator_dollarBalance_check=`celocli account:balance $account_validator_addr | grep dollarBalance | awk -F 'dollarBalance: ' '{print $2}'`
-        account_validator_dollarBalance_check_do=`printf "%f" $account_validator_dollarBalance_check`
+        account_validator_dollarBalance_check_do=`printf "%b" $account_validator_dollarBalance_check`
         account_validator_dollarBalance=`echo ${account_validator_dollarBalance_check_do%.*}`
 
         account_vdalidator_dollarBalance_ex_for_pre=`echo "$account_validator_dollarBalance * 0.9" | bc`
@@ -24,14 +24,14 @@ do
         celocli exchange:dollars --value $account_validator_dollarBalance --from $account_validator_addr --for $account_vdalidator_dollarBalance_ex_for
 
         account_validator_goldBalance=`celocli account:balance $account_validator_addr | grep goldBalance | awk -F 'goldBalance: ' '{print $2}'`
-        account_validator_goldBalance_vo=`printf "%f" $account_validator_goldBalance`
+        account_validator_goldBalance_vo=`printf "%b" $account_validator_goldBalance`
         account_validator_goldBalance_vo_do=`echo ${account_validator_goldBalance_vo%.*}`
         account_validator_goldBalance_vote=`echo $account_validator_goldBalance_vo_do - $account_goldBalance_hold | bc`
 
 
         echo "@@@@@@@@@@@@ calcuator valadador address2 balance @@@@@@@@@@@@"
         account_validator_dollarBalance_check2=`celocli account:balance $account_validator_addr2 | grep dollarBalance | awk -F 'dollarBalance: ' '{print $2}'`
-        account_validator_dollarBalance_check_do2=`printf "%f" $account_validator_dollarBalance_check2`
+        account_validator_dollarBalance_check_do2=`printf "%b" $account_validator_dollarBalance_check2`
         account_validator_dollarBalance2=`echo ${account_validator_dollarBalance_check_do2%.*}`
 
         account_vdalidator_dollarBalance_ex_for_pre2=`echo "$account_validator_dollarBalance2 * 0.9" | bc`
@@ -41,14 +41,14 @@ do
         celocli exchange:dollars --value $account_validator_dollarBalance2 --from $account_validator_addr2 --for $account_vdalidator_dollarBalance_ex_for2
 
         account_validator_goldBalance2=`celocli account:balance $account_validator_addr2 | grep goldBalance | awk -F 'goldBalance: ' '{print $2}'`
-        account_validator_goldBalance_vo2=`printf "%f" $account_validator_goldBalance2`
+        account_validator_goldBalance_vo2=`printf "%b" $account_validator_goldBalance2`
         account_validator_goldBalance_vo_do2=`echo ${account_validator_goldBalance_vo2%.*}`
         account_validator_goldBalance_vote2=`echo $account_validator_goldBalance_vo_do2 - $account_goldBalance_hold | bc`
 
 
         echo "@@@@@@@@@@@@ calcuator group address balance @@@@@@@@@@@@"
         account_group_dollarBalance_check=`celocli account:balance $account_group_addr | grep dollarBalance | awk -F 'dollarBalance: ' '{print $2}'`
-        account_group_dollarBalance_check_do=`printf "%f" $account_group_dollarBalance_check`
+        account_group_dollarBalance_check_do=`printf "%b" $account_group_dollarBalance_check`
         account_group_dollarBalance=`echo ${account_group_dollarBalance_check_do%.*}`
 
         account_group_dollarBalance_ex_for_pre=`echo "$account_group_dollarBalance * 0.9" | bc`
@@ -58,7 +58,7 @@ do
         celocli exchange:dollars --value $account_group_dollarBalance --from $account_group_addr --for $account_group_dollarBalance_ex_for
 
         account_group_goldBalance=`celocli account:balance $account_group_addr | grep goldBalance | awk -F 'goldBalance: ' '{print $2}'`
-        account_group_goldBalance_vo=`printf "%f" $account_group_goldBalance`
+        account_group_goldBalance_vo=`printf "%b" $account_group_goldBalance`
         account_group_goldBalance_vo_do=`echo ${account_group_goldBalance_vo%.*}`
         account_group_goldBalance_vote=`echo $account_group_goldBalance_vo_do - $account_goldBalance_hold | bc`
 
