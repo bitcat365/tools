@@ -3,7 +3,7 @@
 account_address=bitsong1a2vlxncaesht7f3exj2g8yamfxwzafw772vdx5
 validator_address=bitsongvaloper1a2vlxncaesht7f3exj2g8yamfxwzafw7lwsykf
 account_password=1234567890
-bitsongcli_path=~/go/bin/bitsong/bitsongcli
+bitsongcli_path=/root/go/bin/bitsong/bitsongcli
 
 while true 
 do
